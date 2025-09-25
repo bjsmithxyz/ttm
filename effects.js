@@ -6,11 +6,11 @@ export const effects = {
     div.style.fontSize = Math.min(260, window.innerWidth * 0.4) + 'px';
     div.style.position = 'fixed';
     div.style.left = '50%';
-    div.style.top = '50%';
+    div.style.top = window.innerWidth < 600 ? '40%' : '50%';
     div.style.transform = 'translate(-50%, -50%) translate(' + (Math.random() * 200 - 100) + 'px, ' + (Math.random() * 200 - 100) + 'px)';
     div.style.color = 'var(--green)';
     div.style.webkitTextStroke = '4px #000';
-    div.style.textShadow = '-4px -4px 0 #000, 4px -4px 0 #000, -4px 4px 0 #000, 4px 4px 0 #000, 0 0 8px #000';
+    div.style.textShadow = window.innerWidth < 600 ? '-2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000' : '-4px -4px 0 #000, 4px -4px 0 #000, -4px 4px 0 #000, 4px 4px 0 #000, 0 0 8px #000';
     div.style.opacity = '0';
     div.style.transition = 'opacity 4.5s ease';
     div.style.zIndex = (effects.zIndexCounter = (effects.zIndexCounter || 10) + 1);
