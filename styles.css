@@ -1,0 +1,90 @@
+:root{
+  --bg:#1b1b1b;
+  --green:#03A062;
+  --green-dark:#027a51;
+  --gray:#888888;
+}
+
+*{box-sizing:border-box}
+html,body{height:100%;overflow:hidden}
+body{
+  margin:0;
+  background:var(--bg);
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  color:var(--gray);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+#app-frame{
+  min-width:800px;
+  min-height:1000px;
+  border:none;
+  background:var(--bg);
+  display:flex;
+  flex-direction:column;
+}
+main{height:100%;display:flex;flex-direction:column;align-items:center;overflow:hidden;position:relative}
+
+#english-wrap{width:100%;padding-top:25px;display:flex;flex-direction:column;align-items:center}
+#english-word{font-size:12pt;color:var(--gray);letter-spacing:0.25em; transition: opacity 300ms ease, transform 300ms ease; white-space: pre;}
+#english-word .letter{display:inline-block;transition:color 160ms ease}
+#english-word .letter.correct{color:var(--green)}
+#english-word .letter.incorrect{color:red}
+
+/* place the cascade in a fixed area below the english word; overflow hidden on body keeps
+  the viewport static. We limit max-height to avoid pushing page layout */
+#mandarin-cascade{width:calc(100% - 50px);margin:12px 25px 0 25px;display:flex;flex-direction:column;align-items:center;pointer-events:none;max-height:60vh;overflow:visible}
+/* mandarin lines underlap slightly (negative margin) */
+.mandarin-line{width:100%;text-align:center;padding:2px 0;margin:-1.05em 0 0 0;color:var(--bg);background:transparent;font-weight:600;--line-scale:1}
+
+/* first mandarin line should sit 10px below the English word */
+.mandarin-line:first-child{margin-top:10px}
+
+.mandarin-line{
+  opacity:0;
+  transform:translateY(-12px) scale(calc(var(--line-scale) * 0.98));
+  color:var(--bg);
+  transition: color 2900ms ease, opacity 2900ms ease, transform 2900ms ease;
+}
+
+.mandarin-line.visible{
+  opacity:1;
+  transform:translateY(0) scale(var(--line-scale));
+  color:var(--green);
+}
+
+.mandarin-line.fading{
+  opacity:0;
+  transform:translateY(40px) scale(calc(var(--line-scale) * 0.96));
+}
+
+/* Special effects */
+.night-sky .mandarin-line.visible {
+  color: #4A90E2;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0 0 2px #000, 0 0 8px #4A90E2;
+}
+
+/* 2px black outline for mandarin characters: use -webkit-text-stroke where available
+   with a text-shadow fallback to approximate an outline */
+.mandarin-line.visible,
+.mandarin-line{
+  -webkit-text-stroke: 2px #000; /* Safari/Chrome */
+  text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000, 0 0 4px #000;
+}
+
+/* letter fade-out (left-to-right) when word is replaced */
+#english-word .letter.fading-out{opacity:0;transform:translateX(18px);transition:opacity 600ms ease,transform 600ms ease}
+
+/* new word change animations */
+#english-word.fade-out-down{opacity:0;transform:translateY(20px)}
+#english-word.fade-in-up{opacity:0;transform:translateY(-20px)}
+
+#completed-grid{position:fixed;left:12px;bottom:12px;top:auto;width:calc(100% - 24px);height:auto;max-height:calc(40vh);pointer-events:none;display:flex;flex-direction:row-reverse;flex-wrap:wrap-reverse;align-content:flex-end;gap:6px;padding:12px;overflow:visible;background:var(--bg)}
+.completed-char{font-size:10pt;color:var(--green);}
+
+/* some responsiveness */
+@media (max-width:420px){
+  #english-word{font-size:11pt}
+}
