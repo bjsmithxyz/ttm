@@ -145,14 +145,30 @@ async function init(){
     const seqRes = await fetch('./sequences.json');
     if(seqRes.ok) sequences = await seqRes.json();
     pickAndRender();
-    window.addEventListener('keydown', onKey);
+    // Mobile input handling
+    const mobileInput = document.getElementById('mobile-input');
+    if(mobileInput){
+      mobileInput.addEventListener('keydown', onKey);
+      mobileInput.focus();
+      // Focus on any click/tap
+      document.body.addEventListener('click', () => mobileInput.focus());
+    } else {
+      window.addEventListener('keydown', onKey);
+    }
     window.addEventListener('click', ()=>{ /* focus affordance */ });
     // expose for debugging
     window.__incluspeak = {pickAndRender, mapping};
   }catch(err){
     console.warn('Could not fetch files.', err);
     pickAndRender();
-    window.addEventListener('keydown', onKey);
+    const mobileInput = document.getElementById('mobile-input');
+    if(mobileInput){
+      mobileInput.addEventListener('keydown', onKey);
+      mobileInput.focus();
+      document.body.addEventListener('click', () => mobileInput.focus());
+    } else {
+      window.addEventListener('keydown', onKey);
+    }
     window.addEventListener('click', ()=>{ /* focus affordance */ });
     window.__incluspeak = {pickAndRender, mapping};
   }
