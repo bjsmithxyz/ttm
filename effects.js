@@ -26,14 +26,15 @@ export const effects = {
     const lines = CONFIG.cascadeLines;
     const vw = Math.max(window.innerWidth || 800, 800);
     let baseFont = Math.max(96, Math.min(260, Math.floor(vw * 0.18)));
+    const lineEls = [];
     for(let i=0;i<lines;i++){
       const line = document.createElement('div');
       line.className = 'mandarin-line';
       line.style.fontSize = baseFont + 'px';
       line.textContent = mandarin;
       mandarinCascadeEl.appendChild(line);
+      lineEls.push(line);
     }
-    const lineEls = Array.from(mandarinCascadeEl.children).slice(-lines); // only the new ones
     for(let i=0;i<lineEls.length;i++){
       const el = lineEls[i];
       const scale = Math.pow(CONFIG.cascadeScaleStep, i);
@@ -58,6 +59,17 @@ export const effects = {
       const onEnd = (ev) => {
         if(ev.propertyName === 'opacity'){
           last.removeEventListener('transitionend', onEnd);
+          // Clean up faded elements after animation completes
+          lineEls.forEach(el => {
+            if(el.classList.contains('fading') && el.parentNode){
+              // Small delay to ensure transition is complete
+              setTimeout(() => {
+                if(el.parentNode && el.classList.contains('fading')){
+                  el.parentNode.removeChild(el);
+                }
+              }, 100);
+            }
+          });
           resolve();
         }
       };
