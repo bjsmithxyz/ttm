@@ -1,125 +1,138 @@
 :root{
-  --bg:#1b1b1b;
-  --green:#03A062;
-  --green-dark:#027a51;
-  --gray:#888888;
+  --bg-start: #0f172a;
+  --bg-end: #000000;
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --accent: #38bdf8;
+  --accent-glow: rgba(56, 189, 248, 0.3);
+  --error-subtle: rgba(255, 255, 255, 0.1);
 }
 
 *{box-sizing:border-box}
 html,body{height:100%;overflow:hidden}
 body{
   margin:0;
-  background:var(--bg);
-  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-  color:var(--gray);
+  background: radial-gradient(circle at center, var(--bg-start), var(--bg-end));
+  font-family: "Georgia", "Times New Roman", serif; /* Elegant serif for English */
+  color:var(--text-primary);
   display:flex;
   justify-content:center;
   align-items:center;
 }
 
 #app-frame{
-  min-width:800px;
-  min-height:1000px;
+  width: 100%;
+  height: 100%;
   border:none;
-  background:var(--bg);
+  background:transparent;
   display:flex;
   flex-direction:column;
+  position: relative;
 }
-main{height:100%;display:flex;flex-direction:column;align-items:center;overflow:hidden;position:relative}
 
-#english-wrap{width:100%;padding-top:25px;display:flex;flex-direction:column;align-items:center}
-#english-word{font-size:12pt;color:var(--gray);letter-spacing:0.25em; transition: opacity 300ms ease, transform 300ms ease; white-space: pre;}
-#english-word .letter{display:inline-block;transition:color 160ms ease}
-#english-word .letter.correct{color:var(--green)}
-#english-word .letter.incorrect{color:red}
+main{
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content: center; /* Center vertically */
+  overflow:hidden;
+  position:relative;
+  z-index: 10; /* Above the background echoes */
+}
 
-/* place the cascade in a fixed area below the english word; overflow hidden on body keeps
-  the viewport static. We limit max-height to avoid pushing page layout */
-#mandarin-cascade{width:calc(100% - 50px);margin:12px 25px 0 25px;display:flex;flex-direction:column;align-items:center;pointer-events:none;max-height:60vh;overflow:visible}
-
-/* mandarin lines underlap slightly (negative margin) */
-.mandarin-line{
+#english-wrap{
   width:100%;
-  text-align:center;
-  padding:2px 0;
-  margin:-1.05em 0 0 0;
-  color:var(--bg);
-  background:transparent;
-  font-weight:600;
-  --line-scale:1;
-  opacity:0;
-  transform:translateY(-12px) scale(calc(var(--line-scale) * 0.98));
-  transition: color 2900ms ease, opacity 2900ms ease, transform 2900ms ease;
-  /* 2px black outline for mandarin characters */
-  -webkit-text-stroke: 2px #000; /* Safari/Chrome */
-  text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000, 0 0 4px #000;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  margin-bottom: 2rem;
 }
 
-/* first mandarin line should sit 10px below the English word */
-.mandarin-line:first-child{margin-top:10px}
-
-.mandarin-line.visible{
-  opacity:1;
-  transform:translateY(0) scale(var(--line-scale));
-  color:var(--green);
+#english-word{
+  font-size: 3rem;
+  color: var(--text-secondary);
+  letter-spacing: 0.1em;
+  transition: opacity 500ms ease, transform 500ms ease;
+  white-space: pre;
+  text-shadow: 0 0 10px rgba(0,0,0,0.5);
 }
 
-.mandarin-line.fading{
-  opacity:0;
-  transform:translateY(40px) scale(calc(var(--line-scale) * 0.96));
+#english-word .letter{
+  display:inline-block;
+  transition: color 300ms ease, text-shadow 300ms ease, transform 200ms ease;
 }
 
-/* Special effects */
-.night-sky .mandarin-line.visible {
-  color: #4A90E2;
-  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0 0 2px #000, 0 0 8px #4A90E2;
+#english-word .letter.correct{
+  color: var(--text-primary);
+  text-shadow: 0 0 15px var(--accent-glow), 0 0 5px var(--accent);
 }
 
-/* letter fade-out (left-to-right) when word is replaced */
-#english-word .letter.fading-out{opacity:0;transform:translateX(18px);transition:opacity 600ms ease,transform 600ms ease}
+#english-word .letter.incorrect{
+  color: var(--text-secondary);
+  opacity: 0.5;
+  transform: translateY(2px); /* Subtle shake/drop instead of red */
+}
+
+/* The cascade container is now the "Echo Chamber" */
+#mandarin-cascade{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0; /* Behind everything */
+  overflow: hidden;
+}
+
+.mandarin-echo{
+  position: absolute;
+  color: var(--accent);
+  font-family: "Noto Serif SC", "Songti SC", serif; /* Calligraphic style if available */
+  font-weight: 400;
+  opacity: 0;
+  user-select: none;
+  will-change: transform, opacity;
+  text-shadow: 0 0 20px var(--accent-glow);
+}
+
+/* Completed grid is now a subtle history log at the bottom */
+#completed-grid{
+  position:fixed;
+  left:0;
+  bottom:0;
+  width:100%;
+  height: auto;
+  padding: 20px;
+  display:flex;
+  flex-direction:row;
+  flex-wrap:wrap;
+  justify-content: center;
+  gap: 12px;
+  pointer-events:none;
+  z-index: 5;
+  opacity: 0.6;
+}
+
+.completed-char{
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+  opacity: 0;
+  animation: fadeIn 1s forwards;
+}
+
+@keyframes fadeIn {
+  to { opacity: 1; }
+}
 
 /* new word change animations */
-#english-word.fade-out-down{opacity:0;transform:translateY(20px)}
-#english-word.fade-in-up{opacity:0;transform:translateY(-20px)}
+#english-word.fade-out-down{opacity:0;transform:translateY(20px) scale(0.95)}
+#english-word.fade-in-up{opacity:0;transform:translateY(-20px) scale(1.05)}
 
-#completed-grid{position:fixed;left:12px;bottom:12px;top:auto;width:calc(100% - 24px);height:auto;max-height:calc(40vh);pointer-events:none;display:flex;flex-direction:row-reverse;flex-wrap:wrap-reverse;align-content:flex-end;gap:6px;padding:12px;overflow:visible;background:var(--bg)}
-.completed-char{font-size:10pt;color:var(--green);}
-
-/* some responsiveness */
-@media (max-width:420px){
-  #english-word{font-size:11pt}
-}
-
+/* Responsiveness */
 @media (max-width: 600px) {
   #english-word {
-    font-size: 16pt;
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 10;
+    font-size: 2rem;
   }
-  #english-wrap {
-    padding-top: 80px; /* space for fixed word */
-  }
-  #mandarin-cascade {
-    max-height: 40vh;
-  }
-  #completed-grid {
-    max-height: 20vh;
-    font-size: 8pt;
-  }
-  .completed-char {
-    font-size: 8pt;
-  }
-}
-
-@media (max-width: 900px) and (min-width: 601px) {
-  #english-word { font-size: 14pt; }
-  main { padding: 10px; }
-}
-
-@media (orientation: landscape) {
-  #english-word { font-size: 16pt; }
-  #app-frame { min-height: 100vh; }
 }
