@@ -6,6 +6,8 @@ Open `index.html` in a modern browser. No build required.
 
 ## Experience
 
+Navigate to: https://bjsmithxyz.github.io/Echoes/
+
 1. **Type** the English word displayed.
 2. **Watch** as the Mandarin translation manifests and drifts into the background.
 3. **Immerse** yourself in the accumulating cloud of language.
